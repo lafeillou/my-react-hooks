@@ -1,53 +1,33 @@
-import React, { useState, useRef } from "react";
-import { useForm } from "./useForm";
-import "./App.css";
+import React, { useState, useMemo } from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Index } from "./pages";
+import { About } from "./pages/about";
+import { UserContext } from "./UserContext";
 
-import { Hello } from "./Hello";
+function AppRouter() {
+  const [user, setUser] = useState(null);
 
-const App = () => {
-  const [values, handleChange] = useForm({
-    email: "",
-    password: "",
-    firstName: "",
-  });
-
-  // dom引用
-  const inputRef = useRef();
-
-  const [showHello, setShowHello] = useState(true);
-
+  const value = useMemo(() => ({ user, setUser }), [user, setUser]);
   return (
-    <div>
-      <button onClick={() => setShowHello(!showHello)}>toggle</button>
-      {showHello && <Hello />}
-      <input
-        ref={inputRef}
-        name="email"
-        placeholder="emial"
-        value={values.email}
-        onChange={handleChange}
-      />
-      <input
-        name="firstName"
-        placeholder="first name"
-        value={values.firstName}
-        onChange={handleChange}
-      />
-      <input
-        type="password"
-        name="password"
-        placeholder="password"
-        value={values.password}
-        onChange={handleChange}
-      />
-      <button
-        onClick={() => {
-          inputRef.current.focus();
-        }}
-      >
-        focus
-      </button>
-    </div>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/about/">About</Link>
+            </li>
+          </ul>
+        </nav>
+        <UserContext.Provider value={value}>
+          <Route path="/" exact component={Index} />
+          <Route path="/about/" component={About} />
+        </UserContext.Provider>
+      </div>
+    </Router>
   );
-};
-export default App;
+}
+
+export default AppRouter;

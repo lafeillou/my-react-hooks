@@ -1,25 +1,12 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useFetch } from "./useFetch";
+import React from "react";
+import { useCountRenders } from "./useCountRenders";
 
-export const Hello = () => {
-  const renders = useRef(0);
-  const [count, setCount] = useState(() => {
-    return JSON.parse(localStorage.getItem("count"))
-      ? JSON.parse(localStorage.getItem("count"))
-      : 0;
-  });
-  const { data } = useFetch(`http://numbersapi.com/${count}/trivia`);
-  useEffect(() => {
-    localStorage.setItem("count", JSON.stringify(count));
-  }, [count]);
+export const Hello = React.memo(({ increment }) => {
+  // hook
+  useCountRenders();
+  return <button onClick={() => increment(5)}>hello</button>;
+});
 
-  console.log("hello renders: ", renders.current++);
-
-  return (
-    <div>
-      <div>{!data ? "loading..." : data}</div>
-      <div>count: {count}</div>
-      <button onClick={() => setCount((c) => c + 1)}>increment</button>
-    </div>
-  );
-};
+// ({ increment }) => {
+//   return <button onClick={increment}>hello</button>;
+// };
